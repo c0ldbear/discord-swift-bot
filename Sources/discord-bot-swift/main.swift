@@ -10,8 +10,7 @@ bot.on(.messageCreate) { data in
     } else if msg.content == "!xkcd" {
         msg.reply(with: xkcd())
     }
-    
-    
+
 }
 
 bot.connect()
