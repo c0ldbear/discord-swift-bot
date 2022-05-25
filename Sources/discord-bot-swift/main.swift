@@ -4,10 +4,13 @@ let bot = Sword(token: getBotToken())
 
 bot.on(.messageCreate) { data in 
     let msg = data as! Message
-
-    if msg.content == "!marko" || msg.content == "!marco" {
+    print(msg)
+    
+    switch Commands(rawValue: msg.content) {
+    case .marco?, .marko?:
         msg.reply(with: "polo!")
-    } else if msg.content == "!xkcd" {
+    case .xkcd?:
+        // replace with solution from 'xkcd command async-await' branch
         if #available(macOS 12, *) {
             print("Using 'async-await' to fetch XKCD comic.")
             Task.init {
@@ -20,6 +23,8 @@ bot.on(.messageCreate) { data in
                 msg.reply(with: inMsg)
             }
         }
+    default:
+        break
     }
 }
 
