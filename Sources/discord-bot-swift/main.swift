@@ -4,8 +4,7 @@ let bot = Sword(token: getBotToken())
 
 bot.on(.messageCreate) { data in 
     let msg = data as! Message
-    print(msg)
-    
+
     switch Commands(rawValue: msg.content) {
     case .marco?, .marko?:
         msg.reply(with: "polo!")
@@ -22,6 +21,15 @@ bot.on(.messageCreate) { data in
             xkcd() { inMsg in
                 msg.reply(with: inMsg)
             }
+        }
+    case .dn?:
+        if #available(macOS 12, *) {
+            Task.init {
+                msg.reply(with: await dn())
+            }
+        } else {
+            // Fallback on earlier version
+            msg.reply(with: "Sorry, cannot perform that command at this time.")
         }
     default:
         break
