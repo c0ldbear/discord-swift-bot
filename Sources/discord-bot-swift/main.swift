@@ -7,6 +7,10 @@ bot.on(.messageCreate) { data in
 
     if msg.content == "!marko" || msg.content == "!marco" {
         msg.reply(with: "polo!")
+    } else if msg.content == "!xkcd" {
+        xkcd() { inMsg in
+            msg.reply(with: inMsg)
+        }
     }
 }
 
