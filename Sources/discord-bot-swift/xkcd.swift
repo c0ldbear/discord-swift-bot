@@ -9,15 +9,15 @@ import Foundation
 
 struct XkcdData: Codable {
     // Important
-    let title: String
-    let safe_title: String
-    let alt: String
-    let img: String
+    var title: String = ""
+    var alt: String = ""
+    var img: String = ""
     // Extras
-    let num: Int
-    let day: String
-    let month: String
-    let year: String
+    var safe_title: String = ""
+    var num: Int = 0
+    var day: String = ""
+    var month: String = ""
+    var year: String = ""
 }
 
 func xkcd(completion: @escaping (String) -> Void) {

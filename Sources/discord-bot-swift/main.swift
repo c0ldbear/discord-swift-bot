@@ -11,8 +11,17 @@ bot.on(.messageCreate) { data in
         msg.reply(with: "polo!")
     case .xkcd?:
         // replace with solution from 'xkcd command async-await' branch
-        xkcd() { inMsg in
-            msg.reply(with: inMsg)
+        if #available(macOS 12, *) {
+            print("Using 'async-await' to fetch XKCD comic.")
+            Task.init {
+                msg.reply(with: await xkcd())
+            }
+        } else {
+            // Fallback on earlier versions
+            print("Using 'completion' to fetch XKCD comic.")
+            xkcd() { inMsg in
+                msg.reply(with: inMsg)
+            }
         }
     default:
         break
