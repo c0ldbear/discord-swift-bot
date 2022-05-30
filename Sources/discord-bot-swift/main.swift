@@ -25,7 +25,8 @@ bot.on(.messageCreate) { data in
     case .dn?:
         if #available(macOS 12, *) {
             Task.init {
-                msg.reply(with: await dn())
+                let dn = DagensNyheter();
+                msg.reply(with: await dn.latestNews())
             }
         } else {
             // Fallback on earlier version
