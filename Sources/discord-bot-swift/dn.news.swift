@@ -10,30 +10,28 @@ import SwiftSoup
 
 @available(macOS 12.0, *)
 func dn() async -> String {
-    let dnUrl = "https://www.dn.se/nyhetsdygnet/"
+    let dnBaseUrl = "https://www.dn.se"
+    let dnNyhetsDygnetUrl = dnBaseUrl + "/nyhetsdygnet/"
+    var dnNewsLinksMsg: String = "Dagens senaste nyheter\n\n"
     
-    if let url = URL(string: dnUrl) {
+    if let url = URL(string: dnNyhetsDygnetUrl) {
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
-            let httpResponse = response as! HTTPURLResponse // Type casting
+            let httpResponse = response as! HTTPURLResponse // (Forced) type casting
             if httpResponse.statusCode == 200 {
                 let html = String(data: data, encoding: .utf8)!
                 let doc: Document = try SwiftSoup.parse(html)
-//                let sections = try doc.select("section.section__column-main")
                 let aHrefs = try doc.select("a.timeline-teaser")
-//                let links: Elements = try doc.select("a[href]")
-//                print("Number of sections: \(sections.count)")
-//                let mainSection = try sections.attr("class")
-                print("How many main section? \(aHrefs.count)")
-                
-//                for stuff: Element in mainSection.array() {
-//                    print(stuff)
-//                }
                 
                 for link: Element in aHrefs.array()[..<5] {
-                    print("text? \(try link.attr("href"))\n")
+                    let articleLink: String = try link.attr("href")
+                    print("text? \(articleLink), type? \(type(of: articleLink))\n")
+                    dnNewsLinksMsg += dnBaseUrl + articleLink + "\n"
                 }
                 
+                dnNewsLinksMsg += "\n\n" + dnNyhetsDygnetUrl + "\n"
+                print("dn news links msg: \(dnNewsLinksMsg)")
+                return dnNewsLinksMsg
             } else {
                 print("Some other http response code: \(httpResponse.statusCode)")
             }
