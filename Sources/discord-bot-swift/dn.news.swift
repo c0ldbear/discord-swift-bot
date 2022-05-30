@@ -10,7 +10,7 @@ import SwiftSoup
 
 @available(macOS 12.0, *)
 func dn() async -> String {
-    let dnUrl = "https://www.dn.se/"
+    let dnUrl = "https://www.dn.se/nyhetsdygnet/"
     
     if let url = URL(string: dnUrl) {
         do {
@@ -19,17 +19,20 @@ func dn() async -> String {
             if httpResponse.statusCode == 200 {
                 let html = String(data: data, encoding: .utf8)!
                 let doc: Document = try SwiftSoup.parse(html)
-                let links = try doc.select("a")
-                print("Number of links: \(links.count)")
-                var count: Int = 0
-                for link in links {
-                    print(link)
-                    count += 1
-                    if count > Int(links.count / 10) {
-                        break
-                    }
+//                let sections = try doc.select("section.section__column-main")
+                let aHrefs = try doc.select("a.timeline-teaser")
+//                let links: Elements = try doc.select("a[href]")
+//                print("Number of sections: \(sections.count)")
+//                let mainSection = try sections.attr("class")
+                print("How many main section? \(aHrefs.count)")
+                
+//                for stuff: Element in mainSection.array() {
+//                    print(stuff)
+//                }
+                
+                for link: Element in aHrefs.array()[..<5] {
+                    print("text? \(try link.attr("href"))\n")
                 }
-                // Add code to scrap website and find the content of interest
                 
             } else {
                 print("Some other http response code: \(httpResponse.statusCode)")
