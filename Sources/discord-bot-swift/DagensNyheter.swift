@@ -1,31 +1,26 @@
 //
-//  dn.news.swift
+//  DagensNyheter.swift
 //  
 //
 //  Created by teddy juhlin-henricson on 2022-05-25.
 //
-
-// TODO:
-//  [x] Rewrite as a Class
 
 // Bontouch Code Guidelines
 
 import Foundation
 import SwiftSoup
 
-final class DagensNyheter {
-    private let dnBaseUrl: String
-    private let dnNyhetsDygnetUrl: String
+enum DagensNyheterUrls {
+    static let dnBaseUrl = "https://www.dn.se"
+    static let dnNyhetsDygnet = "/nyhetsdygnet/"
+}
 
-    init() {
-        self.dnBaseUrl = "https://www.dn.se"
-        self.dnNyhetsDygnetUrl = self.dnBaseUrl + "/nyhetsdygnet/"
-    }
-    
-    @available(macOS 12.0, *)
+@available(macOS 12.0, *)
+final class DagensNyheter {
+
     func latestNews() async -> String {
             
-        guard let url = URL(string: dnNyhetsDygnetUrl) else {
+        guard let url = URL(string: DagensNyheterUrls.dnBaseUrl + DagensNyheterUrls.dnNyhetsDygnet) else {
             return "No URL."
         }
         
@@ -42,8 +37,8 @@ final class DagensNyheter {
             let dnNewsLinksMsg = try createBotMsg(newsArticleLinks)
             
             return dnNewsLinksMsg
-        } catch {
-            print("Fetch errrror?")
+        } catch let error {
+            print("Error: \(error)")
         }
         
         return "Hej där! Funktionen är inte helt implementerad."
@@ -79,10 +74,10 @@ final class DagensNyheter {
             for link: Element in links.array()[..<5] {
                 let articleLink: String = try link.attr("href")
     //            print("text? \(articleLink), type? \(type(of: articleLink))\n")
-                dnNewsLinksMsg += dnBaseUrl + articleLink + "\n"
+                dnNewsLinksMsg += DagensNyheterUrls.dnBaseUrl + articleLink + "\n"
             }
             
-            dnNewsLinksMsg += "\n\n" + dnNyhetsDygnetUrl + "\n"
+            dnNewsLinksMsg += "\n\n" + DagensNyheterUrls.dnBaseUrl + DagensNyheterUrls.dnNyhetsDygnet + "\n"
             return dnNewsLinksMsg
         }
         return "Something something something lol"
