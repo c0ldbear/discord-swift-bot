@@ -37,14 +37,14 @@ final class DagensNyheter {
             let dnNewsLinksMsg = try createBotMsg(newsArticleLinks)
             
             return dnNewsLinksMsg
+            
         } catch let error {
-            print("Error: \(error)")
+            let errorMsg = "Error: \(error)"
+            print(errorMsg)
+            return errorMsg
         }
-        
-        return "Hej där! Funktionen är inte helt implementerad."
     }
     
-    @available(macOS 12.0, *)
     private func fetchDagensNyheterHTML(url: URL) async throws -> (html: String, httpResponse: HTTPURLResponse) {
         var html: String = "No HTML found."
         
@@ -68,7 +68,9 @@ final class DagensNyheter {
     }
 
     private func createBotMsg(_ links: Elements) throws -> String {
-        if !links.isEmpty {
+        if links.isEmpty {
+            return "I didn't find any article links."
+        } else {
             var dnNewsLinksMsg: String = "Dagens seanste 5 nyheter från dn.se\n\n"
             
             for link: Element in links.array()[..<5] {
@@ -80,6 +82,5 @@ final class DagensNyheter {
             dnNewsLinksMsg += "\n\n" + DagensNyheterUrls.dnBaseUrl + DagensNyheterUrls.dnNyhetsDygnet + "\n"
             return dnNewsLinksMsg
         }
-        return "Something something something lol"
     }
 }
