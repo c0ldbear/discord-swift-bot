@@ -11,4 +11,5 @@ enum Commands: String {
     case marko = "!marko"
     case marco = "!marco"
     case xkcd = "!xkcd"
+    case dn = "!dn"
 }
