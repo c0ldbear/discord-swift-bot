@@ -5,7 +5,7 @@ let bot = Sword(token: getBotToken())
 bot.on(.messageCreate) { data in 
 
     func createEmbedXKCD(title: String, description: String, imgUrl: String) -> Embed {
-             let testImg: Embed.Image = Embed.Image(height: 0, proxyUrl: "", url: imgUrl, width: 0)
+            let testImg: Embed.Image = Embed.Image(height: 0, proxyUrl: "", url: imgUrl, width: 0)
             var testEm: Embed = Embed()
             testEm.image = testImg
             testEm.title = title + " (xkcd.com)"
@@ -24,7 +24,8 @@ bot.on(.messageCreate) { data in
         if #available(macOS 12, *) {
             print("Using 'async-await' to fetch XKCD comic.")
             Task.init {
-                msg.reply(with: await xkcd())
+                let msgEmbed: Embed = await xkcd() // Since there are two functions with different returns, we need to specify the data type?
+                msg.reply(with: msgEmbed)
             }
         } else {
             // Fallback on earlier versions
