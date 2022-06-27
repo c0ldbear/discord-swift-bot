@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Sword
 
 // Will use XkcdData struct from xkcd.swift
 
@@ -24,6 +25,12 @@ struct XkcdData: Codable {
 
 @available(macOS 12.0, *)
 func xkcd() async -> String {
+    let xkcdUrl = "https://xkcd.com/info.0.json"
+    return await loadJson(fromURLString: xkcdUrl)
+}
+
+@available(macOS 12.0, *)
+func xkcd() async -> Embed {
     let xkcdUrl = "https://xkcd.com/info.0.json"
     return await loadJson(fromURLString: xkcdUrl)
 }
@@ -61,6 +68,26 @@ private func loadJson(fromURLString urlString: String) async -> String {
     }
     
     return urlString
+}
+
+@available(macOS 12.0, *)
+private func loadJson(fromURLString urlString: String) async -> Embed {
+    if let url = URL(string: urlString) {
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            let httpResponse = response as! HTTPURLResponse
+            if httpResponse.statusCode == 200 {
+                let botMsg = createBotEmbedMessage(xkcdJson: parseJson(data: data))
+                return botMsg
+            } else {
+                return Embed() //"No response from \(urlString)"
+            }
+        } catch {
+            print("Fetch error? \(error)")
+
+        }
+    }
+    return Embed()
 }
 
 private func loadJson(fromURLString urlString: String, completion: @escaping (Result<Data, Error>) -> Void) {
@@ -116,4 +143,17 @@ private func createBotMessage(xkcdJson decodedJson: XkcdData) -> String {
         return repsonseMessage
     }
     return "Sorry, no comic available :("
+}
+
+private func createBotEmbedMessage(xkcdJson decodedJson: XkcdData) -> Embed {
+    let title = decodedJson.title
+    let imageUrl = decodedJson.img
+    let description = decodedJson.alt
+    let testImg: Embed.Image = Embed.Image(height: 0, proxyUrl: "", url: imageUrl, width: 0)
+    var testEm: Embed = Embed()
+    testEm.image = testImg
+    testEm.title = title + " (xkcd.com)"
+    testEm.url = "https://www.xkcd.com/"
+    testEm.description = "<spoiler>\n||" + description + "||\n</spoiler>"
+    return testEm
 }
