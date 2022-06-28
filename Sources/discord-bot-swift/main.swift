@@ -24,13 +24,13 @@ bot.on(.messageCreate) { data in
         if #available(macOS 12, *) {
             print("Using 'async-await' to fetch XKCD comic.")
             Task.init {
-                let msgEmbed: Embed = await xkcd() // Since there are two functions with different returns, we need to specify the data type?
+                let msgEmbed: Embed = await XKCD().msg() // Since there are two functions with different returns, we need to specify the data type?
                 msg.reply(with: msgEmbed)
             }
         } else {
             // Fallback on earlier versions
             print("Using 'completion' to fetch XKCD comic.")
-            xkcd() { inMsg in
+            XKCD().msg() { inMsg in
                 msg.reply(with: inMsg)
             }
         }
