@@ -4,8 +4,6 @@ let bot = Sword(token: getBotToken())
 
 bot.on(.messageCreate) { data in 
 
-    print("Bot connected! :)")
-    
     let msg = data as! Message
 
     switch Commands(rawValue: msg.content) {
@@ -38,6 +36,11 @@ bot.on(.messageCreate) { data in
     default:
         break
     }
+}
+
+bot.on(.ready) { data in
+    let user = data as! User
+    print("\n\t\(user.username ?? "Bot") says 'Hello there!'\n")
 }
 
 bot.connect()
